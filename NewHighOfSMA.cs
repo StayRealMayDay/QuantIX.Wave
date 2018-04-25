@@ -5,9 +5,9 @@ using QuantTC.Indicators.Generic;
 using static QuantTC.X;
 namespace QuantIX.Wave
 {
-    public class NewLowOfSMA : Indicator<int>
+    public class NewHighOfSMA : Indicator<int>
     {
-        public NewLowOfSMA(IIndicator<IPrice> source, int cycle)
+        public NewHighOfSMA(IIndicator<IPrice> source, int cycle)
         {
             Source = source;
             Cycle = cycle;
@@ -19,18 +19,16 @@ namespace QuantIX.Wave
 
         private void SixtySmaOnUpdate()
         {
-            RangeL(Count, Close.Count).ForEach(i => Data.Add(FindNewLow(i)));
+            RangeL(Count, Close.Count).ForEach(i => Data.Add(FindNewHigh(i)));
             FollowUp();
         }
 
-        private int FindNewLow(int i)
+        private int FindNewHigh(int i)
         {
-            var min = RangeR(0, i + 1).Take(Cycle).Select(ii => SixtySMA[ii]).Min();
+            var max = RangeR(0, i + 1).Take(Cycle).Select(ii => SixtySMA[ii]).Max();
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            return RangeR(0, i + 1)
-                .FirstOrDefault(ii => SixtySMA[ii] == min); //&& SixtySMA[ii] - TenSMA[ii] >= Edge);
+            return RangeR(0, i + 1).FirstOrDefault(ii => SixtySMA[ii] == max );//&& TenSMA[ii] - SixtySMA[ii] >= Edge);
         }
-
 
         private SMA TenSMA { get; }
 
