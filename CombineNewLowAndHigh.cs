@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using QuantTC;
 using QuantTC.Indicators.Generic;
 using static QuantTC.X;
@@ -11,6 +12,7 @@ namespace QuantIX.Wave
             NewHighOfSma = newHighOfSma;
             NewLowOfSma = newLowOfSma;
             NewLowOfSma.Update += NewLowOfSmaOnUpdate;
+            OldIdx = -1;
         }
 
         private void NewLowOfSmaOnUpdate()
@@ -30,24 +32,48 @@ namespace QuantIX.Wave
             Idx = arg;
             if (IsANewHighOfSma)
             {
-                return 1;
+                if (OldIdx == -1)
+                {
+                    OldIdx = Idx;
+                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx], 1));
+                    return 1;
+                }
+                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], 1));
+                OldIdx = Idx;
+                return CategoryTheWave();
             }
             if (IsANewLowOfSma)
             {
-                return -1;
+                if (OldIdx == -1)
+                {
+                    OldIdx = Idx;
+                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx], -1));
+                    return 1;
+                }
+                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], -1));
+                OldIdx = Idx;
+                return CategoryTheWave();
             }
             return 0;
+        }
+
+        private int CategoryTheWave()
+        {
+            
+            
         }
 
         public bool IsANewLowOfSma => NewLowOfSma[Idx] == Idx;
 
         public bool IsANewHighOfSma => NewHighOfSma[Idx] == Idx;
-        
+
+
+        private List<Wave> Waves { get; set; }
 
         private int Idx { get; set; }
-        
-        
-        
+
+        private int OldIdx { get; set; }
+
         private NewHighOfSMA NewHighOfSma { get; set; }
 
         private NewLowOfSMA NewLowOfSma { get; set; }

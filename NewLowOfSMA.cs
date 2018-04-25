@@ -34,7 +34,7 @@ namespace QuantIX.Wave
 
         private SMA TenSMA { get; }
 
-        private SMA SixtySMA { get; }
+        public SMA SixtySMA { get; set; }
 
         public LiveSelector<IPrice, double> Close { get; set; }
 
