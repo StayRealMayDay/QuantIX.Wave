@@ -40,7 +40,7 @@ namespace QuantIX.Wave
                 }
                 Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], 1));
                 OldIdx = Idx;
-                return CategoryTheWave();
+                return 0;
             }
             if (IsANewLowOfSma)
             {
@@ -52,21 +52,16 @@ namespace QuantIX.Wave
                 }
                 Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], -1));
                 OldIdx = Idx;
-                return CategoryTheWave();
+                return 0;
             }
             return 0;
         }
 
-        private int CategoryTheWave()
-        {
-            
-            
-        }
+    
 
         public bool IsANewLowOfSma => NewLowOfSma[Idx] == Idx;
 
         public bool IsANewHighOfSma => NewHighOfSma[Idx] == Idx;
-
 
         private List<Wave> Waves { get; set; }
 
