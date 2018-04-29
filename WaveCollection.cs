@@ -21,6 +21,8 @@ namespace QuantIX.Wave
             Close = Source.LiveSelect((arg, i) => arg.Close);
             TenSMA = Close.SMA(10);
             SixtySMA = Close.SMA(60);
+            Wave = new List<Wave>();
+            WaveSequence = new List<char>();
         }
 
 
