@@ -96,6 +96,10 @@ namespace QuantIX.Wave
 
         private char CompareWave(Wave wave1, Wave wave2)
         {
+            if (wave1.StopPoint != wave2.StartPoint)
+            {
+                return '$';
+            }
             if (wave1.Tendency != wave2.Tendency)
             {
                 var priceDiff = ComparePriceDiff(wave1, wave2, PriceDiffThreshold);
