@@ -99,21 +99,28 @@ namespace QuantIX.Wave
             if (wave1.Tendency != wave2.Tendency)
             {
                 var priceDiff = ComparePriceDiff(wave1, wave2, PriceDiffThreshold);
-                if (priceDiff > 1 - PriceDiffThreshold && priceDiff < 1 + PriceDiffThreshold)
+                if (priceDiff > 1 - PriceDiffThreshold)
                 {
-                    var position = Math.Abs(wave2.StopPoint - wave1.StartPoint) * PositionThreshold;
-                    if (wave1.StopPoint > wave1.StartPoint + position)
+                    if (priceDiff < 1 + PriceDiffThreshold)
                     {
-                        if (wave1.StopPoint < wave2.StopPoint - position)
+                        var position = Math.Abs(wave2.StopPoint - wave1.StartPoint) * PositionThreshold;
+                        if (wave1.StopPoint > wave1.StartPoint + position)
                         {
-                            return 'V';
+                            if (wave1.StopPoint < wave2.StopPoint - position)
+                            {
+                                return 'V';
+                            }
+                            // R indicate the connect point is in the right position,closer to the wave2
+                            return 'R';
                         }
-                        // R indicate the connect point is in the right position,closer to the wave2
-                        return 'R';
+                        // L indicate the connect point is in the left position
+                        return 'L';
                     }
-                    // L indicate the connect point is in the left position
-                    return 'L';
+                    // r indicate wave2 price is beyond the threshold
+                    return 'r';
                 }
+                //l indicate wave2 price is below the threshold
+                return 'l';
             }
 
             return 'i';
