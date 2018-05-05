@@ -12,11 +12,12 @@ namespace QuantIX.Wave
 {
     public class WaveCollection
     {
-        public WaveCollection(IIndicator<IPrice> source, int cycle, double threshold)
+        public WaveCollection(IIndicator<IPrice> source, int cycle, double priceDiffThreshold, double positionThreshold)
         {
             Source = source;
             Cycle = cycle;
-            Threshold = threshold;
+            PriceDiffThreshold = priceDiffThreshold;
+            PositionThreshold = positionThreshold;
             OldPosition = -1;
             Close = Source.LiveSelect((arg, i) => arg.Close);
             TenSMA = Close.SMA(10);
@@ -25,7 +26,10 @@ namespace QuantIX.Wave
             WaveSequence = new List<char>();
         }
 
-
+        /// <summary>
+        /// identify the waves
+        /// choose the high point or the low point to identify the wave
+        /// </summary>
         private void IdentifyWaves()
         {
             for (int i = 0; i < SixtySMA.Count; i++)
@@ -53,44 +57,85 @@ namespace QuantIX.Wave
             }
         }
 
-
+        /// <summary>
+        /// with compare wave to get the relationship between the waves
+        /// </summary>
         private void CreateTheSequence()
         {
             for (int i = 1; i < Wave.Count; i++)
             {
-                WaveSequence.Add(CompareWave(Wave[i - 1], Wave[i], Threshold));
+                WaveSequence.Add(CompareWave(Wave[i - 1], Wave[i]));
             }
         }
 
-        private char CompareWave(Wave wave1, Wave wave2, double threshold)
+//        private char CompareWave(Wave wave1, Wave wave2, double threshold)
+//        {
+//            if (wave1.Tendency != wave2.Tendency)
+//            {
+//                if (CompareSlope(wave1.Slope, wave2.Slope, threshold))
+//                {
+//                    var compareLength = wave2.Length / wave1.Length;
+//                    if (compareLength > 1.5)
+//                    {
+//                        return 'L';
+//                    }
+//
+//                    if (compareLength < 0.5)
+//                    {
+//                        return 'j';
+//                    }
+//
+//                    return 'v';
+//                }
+//
+//                return 'y';
+//            }
+//
+//            return 'i';
+//        }
+
+        private char CompareWave(Wave wave1, Wave wave2)
         {
             if (wave1.Tendency != wave2.Tendency)
             {
-                if (CompareSlpoe(wave1.Slope, wave2.Slope, threshold))
+                var priceDiff = ComparePriceDiff(wave1, wave2, PriceDiffThreshold);
+                if (priceDiff > 1 - PriceDiffThreshold && priceDiff < 1 + PriceDiffThreshold)
                 {
-                    var compareLength = wave2.Length / wave1.Length;
-                    if (compareLength > 1.5)
+                    var position = Math.Abs(wave2.StopPoint - wave1.StartPoint) * PositionThreshold;
+                    if (wave1.StopPoint > wave1.StartPoint + position)
                     {
-                        return 'L';
+                        if (wave1.StopPoint < wave2.StopPoint - position)
+                        {
+                            return 'V';
+                        }
+                        // R indicate the connect point is in the right position,closer to the wave2
+                        return 'R';
                     }
-
-                    if (compareLength < 0.5)
-                    {
-                        return 'j';
-                    }
-
-                    return 'v';
+                    // L indicate the connect point is in the left position
+                    return 'L';
                 }
-
-                return 'y';
             }
 
             return 'i';
         }
 
-        private bool CompareSlpoe(double wave1Slope, double wave2Slope, double threshold)
+        private double ComparePriceDiff(Wave wave1, Wave wave2, double priceDiffThreshold)
         {
-            var Slope = Math.Min(wave1Slope, wave2Slope) / Math.Max(wave1Slope, wave2Slope);
+            var wave1PriceDiff = Math.Abs(wave1.StartPointprice - wave1.StopPointPrice);
+            var waveBetweenPriceDiff = Math.Abs(wave1.StartPointprice - wave2.StopPointPrice);
+            return (waveBetweenPriceDiff / wave1PriceDiff);
+        }
+
+        /// <summary>
+        /// compare the slope of the two wave and make a decision whether they are
+        /// </summary>
+        /// <param name="wave1Slope"></param>
+        /// <param name="wave2Slope"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
+        private bool CompareSlope(double wave1Slope, double wave2Slope, double threshold)
+        {
+            var Slope =  Math.Abs(Math.Min(wave1Slope, wave2Slope) / Math.Max(wave1Slope, wave2Slope));
             return Slope > threshold;
         }
 
@@ -110,7 +155,9 @@ namespace QuantIX.Wave
             .Take(Cycle * 2)
             .All(j => SixtySMA[j] <= SixtySMA[Idx]);
 
-        private double Threshold { get; set; }
+        private double PriceDiffThreshold { get; set; }
+
+        private double PositionThreshold { get; set; }
         
         private List<char> WaveSequence { get; set; }
 
