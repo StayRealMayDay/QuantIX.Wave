@@ -35,10 +35,10 @@ namespace QuantIX.Wave
                 if (OldIdx == -1)
                 {
                     OldIdx = Idx;
-                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx], 1));
+                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx]));
                     return 1;
                 }
-                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], 1));
+                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx]));
                 OldIdx = Idx;
                 return 0;
             }
@@ -47,10 +47,10 @@ namespace QuantIX.Wave
                 if (OldIdx == -1)
                 {
                     OldIdx = Idx;
-                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx], -1));
+                    Waves.Add(new Wave(0, Idx, NewLowOfSma.SixtySMA[0], NewLowOfSma.SixtySMA[Idx]));
                     return 1;
                 }
-                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx], -1));
+                Waves.Add(new Wave(OldIdx, Idx, NewLowOfSma.SixtySMA[OldIdx], NewLowOfSma.SixtySMA[Idx]));
                 OldIdx = Idx;
                 return 0;
             }

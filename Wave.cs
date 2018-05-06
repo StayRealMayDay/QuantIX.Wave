@@ -4,9 +4,8 @@ namespace QuantIX.Wave
 {
     public class Wave
     {
-        public Wave(int startPoint, int stopPoint, double startPointprice, double stopPointPrice, int tendency)
+        public Wave(int startPoint, int stopPoint, double startPointprice, double stopPointPrice)
         {
-            Tendency = tendency;
             StartPoint = startPoint;
             StopPoint = stopPoint;
             StartPointprice = startPointprice;
@@ -15,7 +14,9 @@ namespace QuantIX.Wave
             Length = Math.Sqrt(Math.Pow(StopPointPrice - StartPointprice, 2) + Math.Pow(StopPoint - StartPoint, 2));
         }
 
-        public int Tendency { get; set; }
+
+
+        public int Tendency => StartPointprice > StopPointPrice ? -1 : 1;
 
         public double Length { get; set; }
 

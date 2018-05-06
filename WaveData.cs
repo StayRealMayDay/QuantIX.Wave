@@ -35,13 +35,13 @@ namespace QuantIX.Wave
             {
                 int higtestPointIndex = RangeR(0, arg + 1).First(ii => HHV[ii] == High[ii]);
                 int lowestPointIndex = RangeR(0, higtestPointIndex).First(ii => LLV[ii] == Low[ii]);
-               Waves.Add(new Wave(lowestPointIndex, higtestPointIndex, Source[lowestPointIndex].Low, Source[higtestPointIndex].High, 0));
+               Waves.Add(new Wave(lowestPointIndex, higtestPointIndex, Source[lowestPointIndex].Low, Source[higtestPointIndex].High));
             }
             if (IsMacdGoldenXAt(arg))
             {
                 int LowestPointIndex = RangeR(0, arg + 1).First(ii => LLV[ii] == Low[ii]);
                 int highestPointIndex = RangeR(0, LowestPointIndex).First(ii => HHV[ii] == High[ii]);
-                Waves.Add(new Wave(highestPointIndex, LowestPointIndex, Source[highestPointIndex].High, Source[LowestPointIndex].Low, 0));
+                Waves.Add(new Wave(highestPointIndex, LowestPointIndex, Source[highestPointIndex].High, Source[LowestPointIndex].Low));
             }
             return 0;
         }

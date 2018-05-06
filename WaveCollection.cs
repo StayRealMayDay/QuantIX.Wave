@@ -18,6 +18,7 @@ namespace QuantIX.Wave
             Cycle = cycle;
             PriceDiffThreshold = priceDiffThreshold;
             PositionThreshold = positionThreshold;
+            WaveModeList = new List<Tuple<double, double>>();
             OldPosition = -1;
             Close = Source.LiveSelect((arg, i) => arg.Close);
             TenSMA = Close.SMA(10);
@@ -39,7 +40,7 @@ namespace QuantIX.Wave
                 {
                     if (OldPosition != -1)
                     {
-                        Wave.Add(new Wave(OldPosition, i, SixtySMA[OldPosition], SixtySMA[i], 1));
+                        Wave.Add(new Wave(OldPosition, i, SixtySMA[OldPosition], SixtySMA[i]));
                     }
 
                     OldPosition = i;
@@ -49,7 +50,7 @@ namespace QuantIX.Wave
                 {
                     if (OldPosition != -1)
                     {
-                        Wave.Add(new Wave(OldPosition, i, SixtySMA[OldPosition], SixtySMA[i], -1));
+                        Wave.Add(new Wave(OldPosition, i, SixtySMA[OldPosition], SixtySMA[i]));
                     }
 
                     OldPosition = i;
@@ -98,6 +99,10 @@ namespace QuantIX.Wave
         {
             if (wave1.StopPoint != wave2.StartPoint)
             {
+                Console.WriteLine("---------------------");
+                Console.WriteLine("wave1 stop point:" + wave1.StopPoint);
+                Console.WriteLine("wave2 start point:" + wave2.StartPoint);
+                Console.WriteLine("----------------------");
                 return '$';
             }
             if (wave1.Tendency != wave2.Tendency)
@@ -187,5 +192,7 @@ namespace QuantIX.Wave
         public int Cycle { get; set; }
 
         public IIndicator<IPrice> Source { get; set; }
+
+        private List<Tuple<double, double>> WaveModeList { get; set; }
     }
 }
