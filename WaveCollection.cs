@@ -113,6 +113,9 @@ namespace QuantIX.Wave
                     if (priceDiff < 1 + PriceDiffThreshold)
                     {
                         var position = Math.Abs(wave2.StopPoint - wave1.StartPoint) * PositionThreshold;
+                        var positionRate = Math.Abs((wave1.StopPoint - wave1.StartPoint) /
+                                           (double) (wave2.StopPoint - wave2.StartPoint));
+                        WaveModeList.Add(new Tuple<double, double>(priceDiff, positionRate));
                         if (wave1.StopPoint > wave1.StartPoint + position)
                         {
                             if (wave1.StopPoint < wave2.StopPoint - position)
