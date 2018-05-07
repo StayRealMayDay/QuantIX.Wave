@@ -174,6 +174,8 @@ namespace QuantIX.Wave
             .Take(Cycle * 2)
             .All(j => SixtySMA[j] <= SixtySMA[Idx]);
 
+        public List<Tuple<double, double>> GetWaveModelList => WaveModeList;
+
         private double PriceDiffThreshold { get; set; }
 
         private double PositionThreshold { get; set; }
